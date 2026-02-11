@@ -4,25 +4,30 @@ import path from "path";
 
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
-
-dotenv.config();
+import { connectDB } from './lib/db.js';
+import {ENV} from "./lib/env.js"; 
+import cookieParser from "cookie-parser";
 
 const app = express();
 const __dirname = path.resolve();
 
-let port = process.env.PORT;
+let port = ENV.PORT;
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/auth",authRoutes);
-app.use("/api/messagess", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 // make ready for deployement
-if(process.env.NODE_ENV === "production"){
+if(ENV.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname, "../frontend/dist")))
 
     app.use( (req,res)=>{
         res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
     })
 }
-app.listen(port,()=>
+app.listen(port,()=>{
     console.log(`server is listening on the port ${port}`)
-)
+     connectDB();
+})
