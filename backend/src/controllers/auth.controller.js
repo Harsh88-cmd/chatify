@@ -98,10 +98,10 @@ export const updateProfile = async(req,res)=>{
         if(!profilePic) return res.status(400).json({message:"Profile pic is required"});
 
         const userId = req.user._id;
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const uploadResponse = await cloudinary.uploader.upload(profilePic); // here on cloudinary we saves image in base64 form that frontend send to backend.
 
         const updatedUser = await User.findByIdAndUpdate(userId,
-            {profilePic: uploadResponse.secure_url},
+            {profilePic: uploadResponse.secure_url}, // and in database it save image url from cloudinary.
             {new: true}
         );
         res.status(200).json(updatedUser);
