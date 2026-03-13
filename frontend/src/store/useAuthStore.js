@@ -89,9 +89,13 @@ export const useAuthStore = create((set, get) => ({
 
     const socket = io(BASE_URL, {
       withCredentials: true, // this ensures cookies are sent with the connection
+      transports : ["websocket"]
     });
 
-    socket.connect();
+    // socket.connect();
+    socket.on("connect", () => {
+  console.log("Socket connected:", socket.id);
+});
 
     set({ socket });
 
